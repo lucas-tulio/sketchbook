@@ -1,0 +1,10 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: fixedsys;
+  src: url('./FSEX302.ttf');
+}

@@ -1,0 +1,99 @@
+@use './base.scss';
+
+$contentWidth: 1280px;
+$p5pink: #ff4f94;
+
+body {
+  margin: 0;
+  background: #020202;
+  color: #eee;
+  font-family: fixedsys, monospace;
+  font-size: 16px;
+}
+
+a {
+  color: $p5pink;
+}
+
+input {
+  display: inline-block;
+  margin: 0;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+
+  &:focus {
+    border-color: $p5pink;
+  }
+
+  &:hover {
+    border-color: $p5pink;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  }
+
+  &[type="checkbox"] {
+    margin: 4px 20px -2px 0px;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid $p5pink;
+    cursor: pointer;
+    appearance: none;
+
+    &:checked {
+      background-color: $p5pink;
+    }
+
+    &:hover {
+      border-color: $p5pink;
+      transform: scale(1.1);
+    }
+  }
+
+  &[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    background: #333;
+    border-radius: 2px;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: $p5pink;
+      border-radius: 2px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $p5pink;
+        transform: scale(1.1);
+      }
+    }
+
+    &::-moz-range-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: $p5pink;
+      cursor: pointer;
+      border: none;
+      border-radius: 2px;
+
+      &:hover {
+        background-color: $p5pink;
+        transform: scale(1.1);
+      }
+    }
+  }
+}
+
+label {
+  cursor: pointer;
+}
