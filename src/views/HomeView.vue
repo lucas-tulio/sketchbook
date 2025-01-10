@@ -48,6 +48,11 @@ main {
   min-width: variables.$contentWidth;
   margin: auto;
   align-content: center;
+
+  @media screen and (max-width: variables.$contentWidth) {
+    width: 808px;
+    min-width: 808px;
+  }
 }
 
 h1 {
@@ -60,10 +65,15 @@ h2 {
 }
 
 .canvasContainer {
+  overflow: hidden;
   border: 4px solid variables.$p5pink;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
+
+  @media screen and (max-width: variables.$contentWidth) {
+    flex-direction: column;
+  }
 }
 
 .controls {
@@ -73,6 +83,11 @@ h2 {
 
   font-size: 24px;
   line-height: 3rem;
+
+  @media screen and (max-width: variables.$contentWidth) {
+    border-left: unset;
+    border-top: 2px solid variables.$p5pink;
+  }
 }
 
 .navigation {

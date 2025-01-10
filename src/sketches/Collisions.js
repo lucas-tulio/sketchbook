@@ -1,6 +1,7 @@
 export function Collisions(sketch, onLoad) {
   const numBalls = 300
   const defaultBallSize = 10
+  const defaultWiggle = 0.1
   const balls = []
 
   const maxSpeed = 5
@@ -139,13 +140,13 @@ export function Collisions(sketch, onLoad) {
     sketch.background(15, 0, 30, 255)
 
     sketch.createElement('span', 'Size').parent('controls')
-    ballSize = sketch.createSlider(1, 50, defaultBallSize, 1).parent('controls')
+    ballSize = sketch.createSlider(1, 50, defaultBallSize, 0.5).parent('controls')
     sketch.createElement('br').parent('controls')
-    sketch.createElement('span', 'Balls').parent('controls')
+    sketch.createElement('span', 'Density').parent('controls')
     ballCount = sketch.createSlider(0, 2000, numBalls, 1).parent('controls')
     sketch.createElement('br').parent('controls')
     sketch.createElement('span', 'Wiggle').parent('controls')
-    vibration = sketch.createSlider(0, 3, 0, 0.1).parent('controls')
+    vibration = sketch.createSlider(0.01, 1, defaultWiggle, 0.01).parent('controls')
     gravityCheckbox = sketch.createCheckbox('Gravity').parent('controls')
 
     for (let i = 0; i < numBalls; i++) {
