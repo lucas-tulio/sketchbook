@@ -1,3 +1,5 @@
+import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
+
 export function Collisions(sketch, onLoad) {
   const numBalls = 300
   const defaultBallSize = 10
@@ -136,7 +138,7 @@ export function Collisions(sketch, onLoad) {
   }
 
   sketch.setup = () => {
-    sketch.createCanvas(800, 800)
+    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     sketch.background(15, 0, 30, 255)
 
     sketch.createElement('span', 'Size').parent('controls')

@@ -1,3 +1,5 @@
+import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
+
 export function TenPrint(sketch, onLoad) {
   const margin = 80
   let x = margin
@@ -5,7 +7,7 @@ export function TenPrint(sketch, onLoad) {
   const size = 40
 
   sketch.setup = () => {
-    sketch.createCanvas(800, 800)
+    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     sketch.colorMode(sketch.HSB)
     sketch.frameRate(60)
     sketch.strokeWeight(4)
