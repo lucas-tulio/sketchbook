@@ -28,9 +28,9 @@ let blinkInterval
 
 const word = 'sketches.p5'
 const index = ref(-1)
-const typingMs = 100
-const enterMs = 300
-const listDisplayMs = 2000
+const typingMs = 50
+const enterMs = 100
+const listDisplayMs = 1000
 
 onMounted(() => {
   titleInterval = setInterval(() => {
@@ -58,6 +58,9 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   opacity: 1;
   transition: all 0.3s ease-in-out;
 

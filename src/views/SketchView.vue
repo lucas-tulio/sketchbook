@@ -1,6 +1,6 @@
 <template>
   <main>
-    <h1>collisions.p5</h1>
+    <h1>{{ slug }}.p5</h1>
     <p class="home"><a href="/">< Home</a></p>
     
     <div class="canvasContainer">
@@ -23,9 +23,9 @@
 <script setup>
 import p5 from 'p5'
 import { ref, onMounted, onUnmounted, defineProps } from 'vue'
-import { Collisions } from '@/sketches/Collisions'
+import { useSketchStore } from '@/stores/sketch';
 
-defineProps({
+const props = defineProps({
   slug: {
     type: String,
     required: true,
@@ -35,13 +35,16 @@ defineProps({
 const canvas = ref(null)
 const sketch = ref(null)
 
+const sketchStore = useSketchStore()
+
 const onSketchLoaded = () => {
   canvas.value.style.height = `${sketch.value.height}px`
   canvas.value.style.width = `${sketch.value.width}px`
 }
 
 onMounted(() => {
-  sketch.value = new p5((s) => Collisions(s, onSketchLoaded), canvas.value)
+  const SketchToLoad = sketchStore.sketches.find((sketch) => sketch.name === props.slug)
+  sketch.value = new p5((s) => SketchToLoad(s, onSketchLoaded), canvas.value)
 })
 
 onUnmounted(() => {
