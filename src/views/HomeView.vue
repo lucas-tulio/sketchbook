@@ -3,7 +3,7 @@
     <h1 ref="title">_</h1>
     <section ref="list" class="list hidden">
       <SketchListItem
-        v-for="(sketch, index) in sketchStore.sketches"
+        v-for="(sketch, index) in Sketches"
         :key="index"
         :title="sketch.name"
       />
@@ -14,9 +14,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SketchListItem from '@/components/SketchListItem.vue'
-import { useSketchStore } from '@/stores/sketch'
-
-const sketchStore = useSketchStore()
+import Sketches from '@/sketches'
 
 const title = ref(null)
 const list = ref(null)

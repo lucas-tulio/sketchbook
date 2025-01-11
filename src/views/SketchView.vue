@@ -1,8 +1,7 @@
 <template>
   <main>
-    <h1>{{ slug }}.p5</h1>
+    <h1>{{ slug }}</h1>
     <p class="home"><a href="/">< Home</a></p>
-    
     <div class="canvasContainer">
       <div ref="canvas" class="canvas"></div>
       <div id="controls" class="controls">
@@ -23,7 +22,7 @@
 <script setup>
 import p5 from 'p5'
 import { ref, onMounted, onUnmounted, defineProps } from 'vue'
-import { useSketchStore } from '@/stores/sketch';
+import Sketches from '@/sketches'
 
 const props = defineProps({
   slug: {
@@ -35,16 +34,14 @@ const props = defineProps({
 const canvas = ref(null)
 const sketch = ref(null)
 
-const sketchStore = useSketchStore()
-
 const onSketchLoaded = () => {
   canvas.value.style.height = `${sketch.value.height}px`
   canvas.value.style.width = `${sketch.value.width}px`
 }
 
 onMounted(() => {
-  const SketchToLoad = sketchStore.sketches.find((sketch) => sketch.name === props.slug)
-  sketch.value = new p5((s) => SketchToLoad(s, onSketchLoaded), canvas.value)
+  const SketchToLoad = Sketches.find((sketch) => sketch.name === props.slug)
+  sketch.value = new p5((s) => SketchToLoad.sketch(s, onSketchLoaded), canvas.value)
 })
 
 onUnmounted(() => {

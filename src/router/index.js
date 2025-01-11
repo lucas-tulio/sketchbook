@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import SketchView from '@/views/SketchView.vue'
-import { useSketchStore } from '@/stores/sketch'
+import Sketches from '@/sketches'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,10 +17,9 @@ const router = createRouter({
       component: SketchView,
       props: true,
       beforeEnter: (to, _from, next) => {
-        const sketchStore = useSketchStore()
-        const validSketches = sketchStore.sketches.map((sketch) => sketch.name.toLocaleLowerCase())
+        const validSketches = Sketches.map((sketch) => sketch.name)
         const slug = to.params.slug
-        if (!slug || !validSketches.includes(slug.toLocaleLowerCase())) {
+        if (!slug || !validSketches.includes(slug)) {
           next('/')
         } else {
           next()
