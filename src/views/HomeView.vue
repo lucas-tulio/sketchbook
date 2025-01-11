@@ -1,98 +1,68 @@
 <template>
   <main>
-    <h1>collisions.p5</h1>
-    <div class="canvasContainer">
-      <div ref="canvas" class="canvas"></div>
-      <div id="controls" class="controls">
-        <h2>Controls</h2>
-      </div>
-    </div>
-    <div class="navigation">
-      <div>
-        <p><a href="#">Source</a></p>
-      </div>
-      <div>
-        <p><a href="#">Previous</a> | <a href="#">Next</a></p>
-      </div>
-    </div>
+    <h1 ref="title">_</h1>
+    <section ref="list" class="list hidden">
+      <SketchListItem
+        v-for="(sketch, index) in sketchStore.sketches"
+        :key="index"
+        :title="sketch.name"
+      />
+    </section>
   </main>
 </template>
 
 <script setup>
-import p5 from 'p5'
-import { ref, onMounted, onUnmounted } from 'vue'
-import { Collisions } from '@/sketches/Collisions'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import SketchListItem from '@/components/SketchListItem.vue'
+import { useSketchStore } from '@/stores/sketch'
 
-const canvas = ref(null)
-const sketch = ref(null)
+const sketchStore = useSketchStore()
 
-const onSketchLoaded = () => {
-  canvas.value.style.height = `${sketch.value.height}px`
-  canvas.value.style.width = `${sketch.value.width}px`
-}
+const title = ref(null)
+const list = ref(null)
+
+let titleInterval
+let titleTimeout
+let listTimeout
+let blinkInterval
+
+const word = 'sketches.p5'
+const index = ref(-1)
+const typingMs = 100
+const enterMs = 300
+const listDisplayMs = 2000
 
 onMounted(() => {
-  sketch.value = new p5((s) => Collisions(s, onSketchLoaded), canvas.value)
+  titleInterval = setInterval(() => {
+    index.value++
+    title.value.innerText = `${word.substring(0, index.value)}_`
+    if (index.value >= word.length) {
+      titleTimeout = setTimeout(() => {
+        title.value.innerHTML = `${word}<br/>_`
+      }, enterMs)
+      clearInterval(titleInterval)
+    }
+  }, typingMs)
+  listTimeout = setTimeout(() => {
+    list.value.classList.remove('hidden')
+  }, listDisplayMs)
 })
 
-onUnmounted(() => {
-  sketch.value?.remove()
+onBeforeUnmount(() => {
+  clearInterval(titleInterval)
+  clearTimeout(titleTimeout)
+  clearTimeout(listTimeout)
+  clearInterval(blinkInterval)
 })
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/main.scss' as variables;
+.list {
+  opacity: 1;
+  transition: all 0.3s ease-in-out;
 
-main {
-  width: variables.$contentWidth;
-  min-width: variables.$contentWidth;
-  margin: auto;
-  align-content: center;
-
-  @media screen and (max-width: variables.$contentWidth) {
-    width: 808px;
-    min-width: 808px;
+  &.hidden {
+    opacity: 0;
   }
-}
-
-h1 {
-  color: variables.$p5pink;
-  font-size: 48px;
-}
-
-h2 {
-  font-size: 32px;
-}
-
-.canvasContainer {
-  overflow: hidden;
-  border: 4px solid variables.$p5pink;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: row;
-
-  @media screen and (max-width: variables.$contentWidth) {
-    flex-direction: column;
-  }
-}
-
-.controls {
-  width: 100%;
-  border-left: 2px solid variables.$p5pink;
-  padding: 0 40px 20px 40px;
-
-  font-size: 24px;
-  line-height: 3rem;
-
-  @media screen and (max-width: variables.$contentWidth) {
-    border-left: unset;
-    border-top: 2px solid variables.$p5pink;
-  }
-}
-
-.navigation {
-  display: flex;
-  justify-content: space-between;
-  font-size: 24px;
 }
 </style>
