@@ -42,6 +42,7 @@ export function Lander(p5, onLoad) {
     }
 
     show() {
+      p5.noStroke()
       p5.fill(0, 0, 100)
       p5.triangle(
         this.pos.x - this.w,
@@ -52,7 +53,6 @@ export function Lander(p5, onLoad) {
         this.pos.y,
       )
       p5.fill(0, 100, 100)
-      p5.noStroke()
       p5.rect(this.pos.x - 2, this.pos.y - 1, 4, 2)
     }
   }
@@ -75,9 +75,9 @@ export function Lander(p5, onLoad) {
   p5.draw = () => {
     p5.background(240, 100, 15)
     // Stars
-    p5.stroke(0, 0, 100)
-    for (const star of stars) {
-      p5.point(star.x, star.y)
+    for (let i = 0; i < stars.length; i++) {
+      p5.stroke(0, 0, 100)
+      p5.point(stars[i].x, stars[i].y)
     }
     // Ship
     ship.update()
