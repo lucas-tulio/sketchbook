@@ -4,6 +4,11 @@ $contentWidth: 1280px;
 $p5pink: #ff4f94;
 $borderHighlight: 4px solid $p5pink;
 
+*:focus {
+  outline: $p5pink solid 2px;
+  border-radius: 4px;
+}
+
 body {
   margin: 0;
   background: #020202;
