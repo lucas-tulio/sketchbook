@@ -73,6 +73,7 @@ main {
 
   @media screen and (max-width: variables.$contentWidth) {
     flex-direction: column;
+    min-width: 800px;
   }
 }
 
