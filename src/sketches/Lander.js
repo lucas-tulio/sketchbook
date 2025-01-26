@@ -11,24 +11,31 @@ function createStars(amount) {
   return stars
 }
 
+window.addEventListener('keydown', (e) => {
+  e.preventDefault() // prevent page scrolling
+})
+
 export function Lander(p5, onLoad) {
+  const stars = createStars(100)
+  let ship
+  const gravity = p5.createVector(0, 0.01)
+  const thrust = p5.createVector(0, -0.05)
+
   class Ship {
     constructor(x, y) {
       this.w = 4
       this.h = 12
       this.pos = p5.createVector(x, y)
-      this.acc = p5.createVector()
       this.vel = p5.createVector()
     }
 
     update() {
-      // Add gravity to acceleration
-      this.acc.add(p5.createVector(0, 0.0001))
-
-      // Add acceleration to velocity
-      this.vel.add(this.acc)
-
-      // Add velocity to position
+      const acc = p5.createVector()
+      if (p5.keyIsDown(p5.UP_ARROW)) {
+        acc.add(thrust)
+      }
+      acc.add(gravity)
+      this.vel.add(acc)
       this.pos.add(this.vel)
     }
 
@@ -52,9 +59,6 @@ export function Lander(p5, onLoad) {
     ship = new Ship(DEFAULT_WIDTH / 2, 20)
   }
 
-  const stars = createStars(100)
-  let ship
-
   p5.setup = () => {
     p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     p5.colorMode(p5.HSB)
@@ -75,10 +79,10 @@ export function Lander(p5, onLoad) {
     }
     // Ship
     ship.update()
-    ship.show(p5)
+    ship.show()
   }
 
-  p5.keyPressed = () => {
+  p5.keyPressed = (event) => {
     if (p5.key === 'r') {
       reset()
     }
