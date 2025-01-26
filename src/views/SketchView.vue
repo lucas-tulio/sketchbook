@@ -1,27 +1,34 @@
 <template>
-  <main>
-    <h1>{{ slug }}</h1>
-    <p class="home"><a href="/">< Home</a></p>
-    <div class="canvasContainer">
-      <div ref="canvas" class="canvas"></div>
-      <div id="controls" class="controls">
-        <h2>Controls</h2>
+  <div>
+    <main>
+      <header class="navigation">
+        <div>
+          <p class="home"><a href="/">< Home</a></p>
+        </div>
+        <div>
+          <p><a :href="previousLink">Previous</a> | <a :href="nextLink">Next</a></p>
+        </div>
+      </header>
+      <div class="title">
+        <h1>{{ slug }}</h1>
+        <a href="#" target="_blank">Source</a>
       </div>
-    </div>
-    <div class="navigation">
-      <div>
-        <p><a href="#">Source</a></p>
+      <div class="canvasContainer">
+        <div ref="canvas" class="canvas"></div>
+        <div id="controls" class="controls">
+          <h2>Controls</h2>
+        </div>
       </div>
-      <div>
-        <p><a href="#">Previous</a> | <a href="#">Next</a></p>
-      </div>
-    </div>
-  </main>
+    </main>
+    <footer>
+      <p>Made by Lucas Tulio</p>
+    </footer>
+  </div>
 </template>
 
 <script setup>
 import p5 from 'p5'
-import { ref, onMounted, onUnmounted, defineProps } from 'vue'
+import { ref, onMounted, onUnmounted, defineProps, computed } from 'vue'
 import Sketches from '@/sketches'
 
 const props = defineProps({
@@ -38,6 +45,24 @@ const onSketchLoaded = () => {
   canvas.value.style.height = `${sketch.value.height}px`
   canvas.value.style.width = `${sketch.value.width}px`
 }
+
+const previousLink = computed(() => {
+  const currentIndex = Sketches.findIndex((sketch) => sketch.name === props.slug)
+  if (currentIndex === 0) {
+    // If first, return last
+    return `/sketch/${Sketches[Sketches.length - 1].name}`
+  }
+  return `/sketch/${Sketches[currentIndex - 1].name}`
+})
+
+const nextLink = computed(() => {
+  const currentIndex = Sketches.findIndex((sketch) => sketch.name === props.slug)
+  if (currentIndex === Sketches.length - 1) {
+    // If last, return first
+    return `/sketch/${Sketches[0].name}`
+  }
+  return `/sketch/${Sketches[currentIndex + 1].name}`
+})
 
 onMounted(() => {
   const sketchToLoad = Sketches.find((sketch) => sketch.name === props.slug).sketch
@@ -62,6 +87,16 @@ main {
     width: 808px;
     min-width: 808px;
   }
+}
+
+h1 {
+  margin: 16px 0;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }
 
 .canvasContainer {
@@ -91,14 +126,16 @@ main {
   }
 }
 
-.navigation {
+header.navigation {
   display: flex;
   justify-content: space-between;
-  font-size: 24px;
 }
 
-p.home {
-  height: 42px;
-  font-size: 24px;
+p {
+  margin: 16px 0;
+}
+
+a {
+  font-size: 18px;
 }
 </style>

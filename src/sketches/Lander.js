@@ -12,7 +12,9 @@ function createStars(amount) {
 }
 
 window.addEventListener('keydown', (e) => {
-  e.preventDefault() // prevent page scrolling
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    e.preventDefault()
+  }
 })
 
 export function Lander(p5, onLoad) {

@@ -67,11 +67,4 @@ onBeforeUnmount(() => {
     opacity: 0;
   }
 }
-
-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 180px;
-}
 </style>

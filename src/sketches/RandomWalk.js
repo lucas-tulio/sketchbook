@@ -60,6 +60,13 @@ export function RandomWalk(p5, onLoad) {
 
     p5.createElement('span', 'Click and drag').parent('controls')
 
+    walkers.push(
+      new Walker(
+        DEFAULT_WIDTH / 2,
+        DEFAULT_HEIGHT / 2,
+      ),
+    )
+
     if (onLoad) {
       onLoad()
     }
