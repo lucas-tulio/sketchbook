@@ -10,6 +10,7 @@ export function MazeGenerator(p5, onLoad) {
   const wall = 1
   let tone = 70
   let c = Math.random() * 360
+  let done = false
 
   let visited
 
@@ -18,6 +19,7 @@ export function MazeGenerator(p5, onLoad) {
     p5.colorMode(p5.HSB)
     p5.frameRate(60)
     p5.noStroke()
+    p5.createElement('span', 'Press R to reset').parent('controls')
     reset()
 
     if (onLoad) {
@@ -47,11 +49,7 @@ export function MazeGenerator(p5, onLoad) {
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
         if (p5.floor(p5.random(2)) === 0) {
-          p5.fill(
-            0,
-            0,
-            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
-          )
+          p5.fill(0, 0, p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10))
           p5.triangle(
             x * cellSize,
             y * cellSize,
@@ -60,11 +58,7 @@ export function MazeGenerator(p5, onLoad) {
             x * cellSize,
             y * cellSize + cellSize,
           )
-          p5.fill(
-            0,
-            0,
-            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
-          )
+          p5.fill(0, 0, p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10))
           p5.triangle(
             x * cellSize,
             y * cellSize,
@@ -74,11 +68,7 @@ export function MazeGenerator(p5, onLoad) {
             y * cellSize + cellSize,
           )
         } else {
-          p5.fill(
-            0,
-            0,
-            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
-          )
+          p5.fill(0, 0, p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10))
           p5.triangle(
             x * cellSize,
             y * cellSize,
@@ -87,11 +77,7 @@ export function MazeGenerator(p5, onLoad) {
             x * cellSize,
             y * cellSize + cellSize,
           )
-          p5.fill(
-            0,
-            0,
-            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
-          )
+          p5.fill(0, 0, p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10))
           p5.triangle(
             x * cellSize,
             y * cellSize + cellSize,
@@ -105,6 +91,7 @@ export function MazeGenerator(p5, onLoad) {
     }
     // Open up at 1, 1
     maze[1][1] = open
+    done = false
   }
 
   function getPossible(x, y) {
@@ -171,6 +158,9 @@ export function MazeGenerator(p5, onLoad) {
   }
 
   p5.draw = () => {
+    if (done) {
+      return
+    }
     for (let i = 0; i < 1; i++) {
       tone += p5.random([-2, 0, 2])
       if (tone > 80) {
@@ -234,10 +224,16 @@ export function MazeGenerator(p5, onLoad) {
         index--
       }
 
-      if (index === 0) {
-        reset()
+      if (index === -1) {
+        done = true
         break
       }
+    }
+  }
+
+  p5.keyPressed = () => {
+    if (p5.key === 'r') {
+      reset()
     }
   }
 }

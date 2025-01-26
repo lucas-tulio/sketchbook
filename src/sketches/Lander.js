@@ -84,7 +84,7 @@ export function Lander(p5, onLoad) {
     ship.show()
   }
 
-  p5.keyPressed = (event) => {
+  p5.keyPressed = () => {
     if (p5.key === 'r') {
       reset()
     }
