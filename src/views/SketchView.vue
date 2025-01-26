@@ -40,8 +40,8 @@ const onSketchLoaded = () => {
 }
 
 onMounted(() => {
-  const SketchToLoad = Sketches.find((sketch) => sketch.name === props.slug)
-  sketch.value = new p5((s) => SketchToLoad.sketch(s, onSketchLoaded), canvas.value)
+  const sketchToLoad = Sketches.find((sketch) => sketch.name === props.slug)
+  sketch.value = new p5((s) => sketchToLoad.sketch(s, onSketchLoaded), canvas.value)
 })
 
 onUnmounted(() => {
