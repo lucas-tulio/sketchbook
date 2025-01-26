@@ -1,45 +1,45 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
 
-export function TenPrint(sketch, onLoad) {
+export function TenPrint(p5, onLoad) {
   const margin = 80
   let x = margin
   let y = margin
   const size = 40
 
-  sketch.setup = () => {
-    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
-    sketch.colorMode(sketch.HSB)
-    sketch.frameRate(60)
-    sketch.strokeWeight(4)
-    sketch.background(0)
-    sketch.noFill()
+  p5.setup = () => {
+    p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+    p5.colorMode(p5.HSB)
+    p5.frameRate(60)
+    p5.strokeWeight(4)
+    p5.background(0)
+    p5.noFill()
 
     if (onLoad) {
       onLoad()
     }
   }
 
-  sketch.draw = () => {
-    sketch.stroke(((x + y) * 0.5) % 360, 60, 100)
-    sketch.strokeWeight(size / 4)
-    if (sketch.random() >= 0.5) {
-      sketch.line(x, y, x + size, y + size)
+  p5.draw = () => {
+    p5.stroke(((x + y) * 0.5) % 360, 60, 100)
+    p5.strokeWeight(size / 4)
+    if (p5.random() >= 0.5) {
+      p5.line(x, y, x + size, y + size)
     } else {
-      sketch.line(x, y + size, x + size, y)
+      p5.line(x, y + size, x + size, y)
     }
 
-    if (sketch.random() >= 0.5) {
-      sketch.strokeWeight(size / 2)
-      sketch.point(x, y)
+    if (p5.random() >= 0.5) {
+      p5.strokeWeight(size / 2)
+      p5.point(x, y)
     }
 
     x += size
-    if (x + margin >= sketch.width) {
+    if (x + margin >= p5.width) {
       x = margin
       y += size
     }
-    if (y + margin >= sketch.height) {
-      sketch.noLoop()
+    if (y + margin >= p5.height) {
+      p5.noLoop()
     }
   }
 }

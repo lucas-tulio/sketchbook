@@ -1,6 +1,6 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
 
-export function RandomWalk(sketch, onLoad) {
+export function RandomWalk(p5, onLoad) {
   const size = 4
   const brushSize = 5
   const spread = 1 // how many times it will move
@@ -15,7 +15,7 @@ export function RandomWalk(sketch, onLoad) {
     this.removeFromList = false
 
     this.move = function () {
-      const direction = sketch.random(['up', 'right', 'down', 'left'])
+      const direction = p5.random(['up', 'right', 'down', 'left'])
       if (direction === 'up') {
         this.y -= size
       } else if (direction === 'right') {
@@ -30,8 +30,8 @@ export function RandomWalk(sketch, onLoad) {
     this.show = function () {
       const a = 1 / this.age
       const normalizedAlpha = Math.max(a, 0.05)
-      sketch.stroke((this.age * 0.5) % 360, 100, 100, 1)
-      sketch.point(this.x, this.y)
+      p5.stroke((this.age * 0.5) % 360, 100, 100, 1)
+      p5.point(this.x, this.y)
       for (let i = 0; i < spread; i++) {
         this.move()
       }
@@ -50,32 +50,32 @@ export function RandomWalk(sketch, onLoad) {
     }
   }
 
-  sketch.setup = () => {
-    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
-    sketch.colorMode(sketch.HSB)
-    sketch.rectMode(sketch.CENTER)
-    sketch.strokeWeight(size)
-    sketch.frameRate(60)
-    sketch.background(0)
+  p5.setup = () => {
+    p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+    p5.colorMode(p5.HSB)
+    p5.rectMode(p5.CENTER)
+    p5.strokeWeight(size)
+    p5.frameRate(60)
+    p5.background(0)
 
-    sketch.createElement('span', 'Click and drag').parent('controls')
+    p5.createElement('span', 'Click and drag').parent('controls')
 
     if (onLoad) {
       onLoad()
     }
   }
 
-  sketch.draw = () => {
-    sketch.background(0, 0, 0, 0.1)
+  p5.draw = () => {
+    p5.background(0, 0, 0, 0.1)
     for (let i = 0; i < walkers.length; i++) {
       walkers[i].show()
     }
-    if (sketch.mouseIsPressed) {
+    if (p5.mouseIsPressed) {
       for (let i = 0; i < brushSize; i++) {
         walkers.push(
           new Walker(
-            sketch.mouseX - (sketch.mouseX % size),
-            sketch.mouseY - (sketch.mouseY % size),
+            p5.mouseX - (p5.mouseX % size),
+            p5.mouseY - (p5.mouseY % size),
           ),
         )
       }

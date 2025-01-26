@@ -1,6 +1,6 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
 
-export function Collisions(sketch, onLoad) {
+export function Collisions(p5, onLoad) {
   const numBalls = 300
   const defaultBallSize = 10
   const defaultWiggle = 0.1
@@ -19,19 +19,19 @@ export function Collisions(sketch, onLoad) {
     if (x && y) {
       return new Ball(x, y)
     }
-    return new Ball(sketch.random(sketch.width), sketch.random(sketch.height))
+    return new Ball(p5.random(p5.width), p5.random(p5.height))
   }
 
   function Ball(x, y) {
     this.x = x
     this.y = y
-    this.acceleration = sketch.createVector(0, 0)
-    this.velocity = sketch.createVector(sketch.random(-1, 1), sketch.random(-1, 1))
+    this.acceleration = p5.createVector(0, 0)
+    this.velocity = p5.createVector(p5.random(-1, 1), p5.random(-1, 1))
     this.velocity.setMag(1)
     this.radius = ballSize.value()
 
     this.draw = function () {
-      sketch.circle(this.x, this.y, this.radius)
+      p5.circle(this.x, this.y, this.radius)
     }
 
     this.applyGravity = function () {
@@ -43,8 +43,8 @@ export function Collisions(sketch, onLoad) {
     }
 
     this.applyVibration = function () {
-      this.velocity.x = this.velocity.x + sketch.random(-vibration.value(), vibration.value())
-      this.velocity.y = this.velocity.y + sketch.random(-vibration.value(), vibration.value())
+      this.velocity.x = this.velocity.x + p5.random(-vibration.value(), vibration.value())
+      this.velocity.y = this.velocity.y + p5.random(-vibration.value(), vibration.value())
     }
 
     this.applyMaxSpeed = function () {
@@ -61,24 +61,24 @@ export function Collisions(sketch, onLoad) {
     }
 
     this.bounceOnEdges = function () {
-      if (this.x - this.radius / 2 < 0 || this.x + this.radius / 2 > sketch.width) {
+      if (this.x - this.radius / 2 < 0 || this.x + this.radius / 2 > p5.width) {
         this.velocity.x = -this.velocity.x
         this.velocity.x += this.velocity.x * attrition
       }
-      if (this.y - this.radius / 2 < 0 || this.y + this.radius / 2 > sketch.height) {
+      if (this.y - this.radius / 2 < 0 || this.y + this.radius / 2 > p5.height) {
         this.velocity.y = -this.velocity.y
         this.velocity.y += this.velocity.y * attrition
       }
       // Avoid going thru walls
       if (this.x < this.radius / 2) {
         this.x = this.radius / 2
-      } else if (this.x > sketch.width - this.radius / 2) {
-        this.x = sketch.width - this.radius / 2
+      } else if (this.x > p5.width - this.radius / 2) {
+        this.x = p5.width - this.radius / 2
       }
       if (this.y < this.radius / 2) {
         this.y = this.radius / 2
-      } else if (this.y > sketch.height - this.radius / 2) {
-        this.y = sketch.height - this.radius / 2
+      } else if (this.y > p5.height - this.radius / 2) {
+        this.y = p5.height - this.radius / 2
       }
     }
 
@@ -137,25 +137,25 @@ export function Collisions(sketch, onLoad) {
     }
   }
 
-  sketch.setup = () => {
-    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
-    sketch.background(15, 0, 30, 255)
+  p5.setup = () => {
+    p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+    p5.background(15, 0, 30, 255)
 
-    sketch.createElement('span', 'Size').parent('controls')
-    ballSize = sketch.createSlider(1, 50, defaultBallSize, 0.5).parent('controls')
-    sketch.createElement('br').parent('controls')
-    sketch.createElement('span', 'Density').parent('controls')
-    ballCount = sketch.createSlider(0, 2000, numBalls, 1).parent('controls')
-    sketch.createElement('br').parent('controls')
-    sketch.createElement('span', 'Wiggle').parent('controls')
-    vibration = sketch.createSlider(0.01, 1, defaultWiggle, 0.01).parent('controls')
-    gravityCheckbox = sketch.createCheckbox('Gravity').parent('controls')
+    p5.createElement('span', 'Size').parent('controls')
+    ballSize = p5.createSlider(1, 50, defaultBallSize, 0.5).parent('controls')
+    p5.createElement('br').parent('controls')
+    p5.createElement('span', 'Density').parent('controls')
+    ballCount = p5.createSlider(0, 2000, numBalls, 1).parent('controls')
+    p5.createElement('br').parent('controls')
+    p5.createElement('span', 'Wiggle').parent('controls')
+    vibration = p5.createSlider(0.01, 1, defaultWiggle, 0.01).parent('controls')
+    gravityCheckbox = p5.createCheckbox('Gravity').parent('controls')
 
     for (let i = 0; i < numBalls; i++) {
       balls.push(createBall())
     }
-    sketch.noStroke()
-    sketch.fill(240, 200, 180)
+    p5.noStroke()
+    p5.fill(240, 200, 180)
     ballCount.elt.addEventListener('input', (event) => {
       const newBallCount = event.target.value
       let diff = balls.length - newBallCount
@@ -175,23 +175,23 @@ export function Collisions(sketch, onLoad) {
     }
   }
 
-  sketch.draw = () => {
-    sketch.colorMode(sketch.RGB)
-    sketch.background(0, 0, 30, 50)
+  p5.draw = () => {
+    p5.colorMode(p5.RGB)
+    p5.background(0, 0, 30, 50)
     for (let i = 0; i < balls.length; i++) {
-      sketch.colorMode(sketch.HSB)
-      sketch.fill(220, 255, 255)
+      p5.colorMode(p5.HSB)
+      p5.fill(220, 255, 255)
       balls[i].update()
       balls[i].draw()
     }
   }
 
-  sketch.isMouseInBounds = () => {
+  p5.isMouseInBounds = () => {
     return (
-      sketch.mouseX >= 0 &&
-      sketch.mouseX <= sketch.width &&
-      sketch.mouseY >= 0 &&
-      sketch.mouseY <= sketch.height
+      p5.mouseX >= 0 &&
+      p5.mouseX <= p5.width &&
+      p5.mouseY >= 0 &&
+      p5.mouseY <= p5.height
     )
   }
 }

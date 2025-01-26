@@ -1,6 +1,6 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
 
-export function MazeGenerator(sketch, onLoad) {
+export function MazeGenerator(p5, onLoad) {
   let rows, cols
   let cellSize
   let maze = []
@@ -13,11 +13,11 @@ export function MazeGenerator(sketch, onLoad) {
 
   let visited
 
-  sketch.setup = () => {
-    sketch.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
-    sketch.colorMode(sketch.HSB)
-    sketch.frameRate(60)
-    sketch.noStroke()
+  p5.setup = () => {
+    p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
+    p5.colorMode(p5.HSB)
+    p5.frameRate(60)
+    p5.noStroke()
     reset()
 
     if (onLoad) {
@@ -26,14 +26,14 @@ export function MazeGenerator(sketch, onLoad) {
   }
 
   function reset() {
-    sketch.noStroke()
-    sketch.background(0, 0, 0)
+    p5.noStroke()
+    p5.background(0, 0, 0)
     visited = [{ x: 1, y: 1 }]
     maze = []
-    rows = sketch.floor(sketch.height / 20) - 1
-    cols = sketch.floor(sketch.width / 20) - 1
+    rows = p5.floor(p5.height / 20) - 1
+    cols = p5.floor(p5.width / 20) - 1
     index = 0
-    cellSize = sketch.width / cols
+    cellSize = p5.width / cols
 
     for (let y = 0; y < rows; y++) {
       maze.push([])
@@ -46,13 +46,13 @@ export function MazeGenerator(sketch, onLoad) {
 
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < cols; x++) {
-        if (sketch.floor(sketch.random(2)) === 0) {
-          sketch.fill(
+        if (p5.floor(p5.random(2)) === 0) {
+          p5.fill(
             0,
             0,
-            sketch.noise(x * noiseScale, y * noiseScale) * 20 + sketch.random(0, 10),
+            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
           )
-          sketch.triangle(
+          p5.triangle(
             x * cellSize,
             y * cellSize,
             x * cellSize + cellSize,
@@ -60,12 +60,12 @@ export function MazeGenerator(sketch, onLoad) {
             x * cellSize,
             y * cellSize + cellSize,
           )
-          sketch.fill(
+          p5.fill(
             0,
             0,
-            sketch.noise(x * noiseScale, y * noiseScale) * 20 + sketch.random(0, 10),
+            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
           )
-          sketch.triangle(
+          p5.triangle(
             x * cellSize,
             y * cellSize,
             x * cellSize + cellSize,
@@ -74,12 +74,12 @@ export function MazeGenerator(sketch, onLoad) {
             y * cellSize + cellSize,
           )
         } else {
-          sketch.fill(
+          p5.fill(
             0,
             0,
-            sketch.noise(x * noiseScale, y * noiseScale) * 20 + sketch.random(0, 10),
+            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
           )
-          sketch.triangle(
+          p5.triangle(
             x * cellSize,
             y * cellSize,
             x * cellSize + cellSize,
@@ -87,12 +87,12 @@ export function MazeGenerator(sketch, onLoad) {
             x * cellSize,
             y * cellSize + cellSize,
           )
-          sketch.fill(
+          p5.fill(
             0,
             0,
-            sketch.noise(x * noiseScale, y * noiseScale) * 20 + sketch.random(0, 10),
+            p5.noise(x * noiseScale, y * noiseScale) * 20 + p5.random(0, 10),
           )
-          sketch.triangle(
+          p5.triangle(
             x * cellSize,
             y * cellSize + cellSize,
             x * cellSize + cellSize,
@@ -125,7 +125,7 @@ export function MazeGenerator(sketch, onLoad) {
     if (isPassable(right.x, right.y)) {
       possibleDir.push(right)
     }
-    return sketch.random(possibleDir)
+    return p5.random(possibleDir)
   }
 
   function isVisited(x, y) {
@@ -170,9 +170,9 @@ export function MazeGenerator(sketch, onLoad) {
     return true
   }
 
-  sketch.draw = () => {
+  p5.draw = () => {
     for (let i = 0; i < 1; i++) {
-      tone += sketch.random([-2, 0, 2])
+      tone += p5.random([-2, 0, 2])
       if (tone > 80) {
         tone = 80
       } else if (tone < 60) {
@@ -181,11 +181,11 @@ export function MazeGenerator(sketch, onLoad) {
       const pos = visited[index]
       const next = getPossible(pos.x, pos.y)
 
-      c += sketch.random([0, 1])
+      c += p5.random([0, 1])
       if (maze[pos.y][pos.x] === open) {
-        if (sketch.floor(sketch.random(2)) === 0) {
-          sketch.fill(c % 360, tone + sketch.random(-20, 20), 100)
-          sketch.triangle(
+        if (p5.floor(p5.random(2)) === 0) {
+          p5.fill(c % 360, tone + p5.random(-20, 20), 100)
+          p5.triangle(
             pos.x * cellSize,
             pos.y * cellSize,
             pos.x * cellSize + cellSize,
@@ -193,8 +193,8 @@ export function MazeGenerator(sketch, onLoad) {
             pos.x * cellSize,
             pos.y * cellSize + cellSize,
           )
-          sketch.fill(c % 360, tone + sketch.random(-20, 20), 100)
-          sketch.triangle(
+          p5.fill(c % 360, tone + p5.random(-20, 20), 100)
+          p5.triangle(
             pos.x * cellSize,
             pos.y * cellSize,
             pos.x * cellSize + cellSize,
@@ -203,8 +203,8 @@ export function MazeGenerator(sketch, onLoad) {
             pos.y * cellSize + cellSize,
           )
         } else {
-          sketch.fill(c % 360, tone + sketch.random(-20, 20), 100)
-          sketch.triangle(
+          p5.fill(c % 360, tone + p5.random(-20, 20), 100)
+          p5.triangle(
             pos.x * cellSize,
             pos.y * cellSize,
             pos.x * cellSize + cellSize,
@@ -212,8 +212,8 @@ export function MazeGenerator(sketch, onLoad) {
             pos.x * cellSize,
             pos.y * cellSize + cellSize,
           )
-          sketch.fill(c % 360, tone + sketch.random(-20, 20), 100)
-          sketch.triangle(
+          p5.fill(c % 360, tone + p5.random(-20, 20), 100)
+          p5.triangle(
             pos.x * cellSize,
             pos.y * cellSize + cellSize,
             pos.x * cellSize + cellSize,
