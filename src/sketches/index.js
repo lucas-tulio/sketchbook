@@ -9,8 +9,8 @@ import { Lander } from '@/sketches/Lander'
 export default [
   { name: 'Lander', sketch: Lander },
   { name: 'Collisions', sketch: Collisions },
-  { name: '10 Print', sketch: TenPrint },
+  { name: '10 Print', slug: 'TenPrint', sketch: TenPrint },
   { name: 'Starfield', sketch: Starfield },
-  { name: 'Maze Generator', sketch: MazeGenerator },
-  { name: 'Random Walk', sketch: RandomWalk },
+  { name: 'Maze Generator', slug: 'MazeGenerator', sketch: MazeGenerator },
+  { name: 'Random Walk', slug: 'RandomWalk', sketch: RandomWalk },
 ]

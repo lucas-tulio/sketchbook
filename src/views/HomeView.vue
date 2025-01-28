@@ -2,18 +2,15 @@
   <main>
     <h1 ref="title">_</h1>
     <section ref="list" class="list hidden">
-      <SketchListItem
-        v-for="(sketch, index) in Sketches"
-        :key="index"
-        :title="sketch.name"
-      />
+      <SketchListItem v-for="(sketch, index) in Sketches" :key="index" :title="sketch.name" />
     </section>
-    <footer>Made by Lucas Tulio</footer>
+    <Footer />
   </main>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import Footer from '@/components/Footer.vue'
 import SketchListItem from '@/components/SketchListItem.vue'
 import Sketches from '@/sketches'
 

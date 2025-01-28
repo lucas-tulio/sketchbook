@@ -11,7 +11,7 @@
       </header>
       <div class="title">
         <h1>{{ slug }}</h1>
-        <a href="#" target="_blank">Source</a>
+        <a :href="sourceLink" target="_blank">Source</a>
       </div>
       <div class="canvasContainer">
         <div ref="canvas" class="canvas"></div>
@@ -20,9 +20,7 @@
         </div>
       </div>
     </main>
-    <footer>
-      <p>Made by Lucas Tulio</p>
-    </footer>
+    <Footer />
   </div>
 </template>
 
@@ -30,6 +28,7 @@
 import p5 from 'p5'
 import { ref, onMounted, onUnmounted, defineProps, computed } from 'vue'
 import Sketches from '@/sketches'
+import Footer from '@/components/Footer.vue'
 
 const props = defineProps({
   slug: {
@@ -62,6 +61,12 @@ const nextLink = computed(() => {
     return `/sketch/${Sketches[0].name}`
   }
   return `/sketch/${Sketches[currentIndex + 1].name}`
+})
+
+const sourceLink = computed(() => {
+  const sketch = Sketches.find((sketch) => sketch.name === props.slug)
+  const slug = sketch.slug ? sketch.slug : sketch.name
+  return `https://github.com/lucas-tulio/sketchbook/blob/main/src/sketches/${slug}.js`
 })
 
 onMounted(() => {
