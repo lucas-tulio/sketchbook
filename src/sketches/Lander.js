@@ -1,5 +1,5 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
-import { lineIntersect, round } from '@/sketches/util'
+import { lineIntersect } from '@/sketches/util'
 
 window.addEventListener('keydown', (e) => {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
@@ -17,10 +17,14 @@ export function Lander(p5, onLoad) {
 
   const GROUND_ANGLE_LIMIT = 30
   const LANDING_ANGLE_LIMIT = 20
-  const LANDING_VELOCITY_LIMIT = 3
+  const LANDING_VELOCITY_LIMIT = 1.5
+
+  const FUEL_BAR_WIDTH = 180
+  const FUEL_BAR_HEIGHT = 20
 
   class Ship {
     constructor(x, y) {
+      this.ps = new ParticleSystem()
       this.w = 8
       this.h = 24
       this.pos = p5.createVector(x, y)
@@ -29,20 +33,24 @@ export function Lander(p5, onLoad) {
 
       this.landed = false
       this.crashed = false
+      this.lost = false
       this.landingVelocity = null
       this.landingAngle = null
       this.groundAngle = null
 
-      this.fuel = 3
+      this.MAX_FUEL = 3
+      this.fuel = this.MAX_FUEL
       this.fuelCost = 0.01
     }
 
     update() {
-      if (this.landed || this.crashed) {
+      if (this.landed || this.crashed || this.lost) {
         return
       }
       const acc = p5.createVector()
       if (p5.keyIsDown(p5.UP_ARROW) && this.fuel > 0) {
+        // Add particles
+        this.ps.addParticle(this.pos, this.heading)
         // Thrust in the direction of the heading
         acc.add(thrust)
         acc.rotate(this.heading)
@@ -56,6 +64,11 @@ export function Lander(p5, onLoad) {
       acc.add(gravity)
       this.vel.add(acc)
       this.pos.add(this.vel)
+
+      // Check if we're lost in space
+      if (this.pos.x < -50 || this.pos.x > DEFAULT_WIDTH + 50 || this.pos.y > DEFAULT_HEIGHT + 50 || this.pos.y < -50) {
+        this.lost = true
+      }
 
       // Check if we hit the ground
       // Calculate the position of the lines that form the ship body
@@ -106,7 +119,6 @@ export function Lander(p5, onLoad) {
           this.crashed = true
           break
         }
-
         // If the bottom of the ship intersects with the ground, we (probably) landed
         const bottomIntersect = lineIntersect(
           a.x,
@@ -120,7 +132,9 @@ export function Lander(p5, onLoad) {
         )
         if (bottomIntersect) {
           // Calculate the angle of the landing
-          this.groundAngle = p5.abs(((p5.degrees(p5.atan2(b.y - a.y, b.x - a.x)) + 180) % 360) - 180) // abs of atan2 of the ground line
+          this.groundAngle = p5.abs(
+            ((p5.degrees(p5.atan2(b.y - a.y, b.x - a.x)) + 180) % 360) - 180,
+          ) // abs of atan2 of the ground line
           this.landingAngle = p5.abs(((p5.degrees(this.heading) + 180) % 360) - 180) // abs of mod of heading, basically
           this.landingVelocity = p5.abs(this.vel.y)
 
@@ -144,6 +158,7 @@ export function Lander(p5, onLoad) {
 
     show() {
       // Rotate according to heading
+
       p5.push()
       p5.translate(this.pos.x, this.pos.y)
       p5.rotate(this.heading)
@@ -169,23 +184,75 @@ export function Lander(p5, onLoad) {
       // Pop matrix
       p5.pop()
 
-      const shipAngle = p5.abs(((p5.degrees(this.heading) + 180) % 360) - 180)
-
+      p5.fill(0, 0, 100)
       p5.noStroke()
       p5.textAlign(p5.LEFT)
       p5.textSize(24)
 
+      // Fuel bar
       p5.text('Fuel', 40, 40)
+      p5.stroke(0, 0, 100)
+      p5.strokeWeight(2)
+      p5.noFill()
+      p5.rect(40, 60, FUEL_BAR_WIDTH, FUEL_BAR_HEIGHT)
+      p5.fill(0, 0, 100)
+      p5.rect(40, 60, (this.fuel * FUEL_BAR_WIDTH) / ship.MAX_FUEL, FUEL_BAR_HEIGHT)
+    }
+  }
 
-      if (this.groundAngle !== null) {
-        p5.text('groundAngle:' + round(this.groundAngle), 180, 80)
+  class ParticleSystem {
+    constructor() {
+      this.particles = []
+      this.hue = 0
+    }
+
+    addParticle(location, angle) {
+      this.hue += 3
+      this.particles.push(new Particle(location, angle, this.hue))
+    }
+
+    update() {
+      for (let i = this.particles.length - 1; i >= 0; i--) {
+        let p = this.particles[i]
+        p.update()
+        if (p.isDead()) {
+          this.particles.splice(i, 1)
+        }
       }
-      if (this.landingAngle !== null) {
-        p5.text('landingAngle:' + round(this.landingAngle), 180, 100)
+    }
+
+    show() {
+      for (let p of this.particles) {
+        p.show()
       }
-      if (this.landingVelocity !== null) {
-        p5.text('landingVelocity:' + round(this.landingVelocity), 180, 120)
-      }
+    }
+  }
+
+  class Particle {
+    constructor(pos, angle, hue) {
+      this.acc = p5.createVector(0, 0)
+      this.vel = p5.createVector(p5.random(-0.5, 0.5), p5.random(-0.5, 0.5)).add(0, 2).rotate(angle)
+      this.pos = pos.copy().add(0, 4)
+      this.lifespan = 128
+      this.size = 4
+      this.hue = hue
+    }
+
+    update() {
+      this.vel.add(this.acc)
+      this.pos.add(this.vel)
+      this.lifespan -= 1
+    }
+
+    show() {
+      p5.noStroke()
+      const a = p5.map(this.lifespan, 0, 128, 0.5, 1)
+      p5.fill(this.hue % 360, 100, 100, a)
+      p5.ellipse(this.pos.x, this.pos.y, this.size, this.size)
+    }
+
+    isDead() {
+      return this.lifespan <= 0
     }
   }
 
@@ -203,12 +270,12 @@ export function Lander(p5, onLoad) {
   function createGround() {
     const ground = []
     const segments = 30
-    const peakChance = 0.1
+    const peakChance = 0.2
     const segmentWidth = DEFAULT_WIDTH / segments
     for (let i = 0; i < segments + 1; i++) {
       let height = DEFAULT_HEIGHT - groundHeight
       if (Math.random() < peakChance) {
-        height -= Math.random() * 120
+        height -= Math.random() * 140
       } else {
         height -= Math.random() * 20
       }
@@ -236,6 +303,9 @@ export function Lander(p5, onLoad) {
     p5.colorMode(p5.HSB)
     p5.textAlign(p5.CENTER, p5.CENTER)
     p5.textFont('fixedsys')
+    p5.createElement('span', 'Up to accelerate<br/>').parent('controls')
+    p5.createElement('span', 'Left and Right to rotate<br/>').parent('controls')
+    p5.createElement('span', 'R to reset').parent('controls')
 
     reset()
 
@@ -252,8 +322,8 @@ export function Lander(p5, onLoad) {
       p5.point(stars[i].x, stars[i].y)
     }
     // Ground
-    p5.stroke(0, 0, 100)
-    p5.fill(0, 0, 100)
+    p5.stroke(0, 0, 90)
+    p5.fill(0, 0, 10)
     p5.strokeWeight(2)
     p5.beginShape()
     p5.vertex(0, DEFAULT_HEIGHT)
@@ -262,24 +332,48 @@ export function Lander(p5, onLoad) {
     }
     p5.vertex(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     p5.endShape(p5.CLOSE)
+
     // Ship
     ship.update()
     ship.show()
+    ship.ps.update()
+    ship.ps.show()
 
     // UI
+    p5.textAlign(p5.CENTER)
     if (ship.crashed) {
       p5.noStroke()
       p5.fill(0, 100, 100)
-      p5.text('CRASHED', DEFAULT_WIDTH / 2, 80)
+      p5.text('CRASHED!', DEFAULT_WIDTH / 2, 180)
     } else if (ship.landed) {
       p5.noStroke()
       p5.fill(120, 100, 100)
-      p5.text('LANDED', DEFAULT_WIDTH / 2, 80)
+      p5.text('LANDED!', DEFAULT_WIDTH / 2, 180)
+    } else if (ship.lost) {
+      p5.noStroke()
+      p5.fill(0, 100, 100)
+      p5.text('LOST IN SPACE!', DEFAULT_WIDTH / 2, 180)
     }
+
+    // Landing results
+    let reason = ``
+    if (ship.landingVelocity > LANDING_VELOCITY_LIMIT) {
+      reason += 'Too fast!\n'
+    }
+    if (ship.landingAngle > LANDING_ANGLE_LIMIT) {
+      reason += 'Ship too steep!\n'
+    }
+    if (ship.groundAngle > GROUND_ANGLE_LIMIT) {
+      reason += 'Ground too steep!\n'
+    }
+    p5.text(reason, DEFAULT_WIDTH / 2, 280)
   }
 
   p5.keyPressed = () => {
     if (p5.key === 'r') {
+      reset()
+    }
+    if (ship.landed || ship.crashed) {
       reset()
     }
   }
