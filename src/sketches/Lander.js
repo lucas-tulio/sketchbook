@@ -373,7 +373,7 @@ export function Lander(p5, onLoad) {
     if (p5.key === 'r') {
       reset()
     }
-    if (ship.landed || ship.crashed) {
+    if (ship.landed || ship.crashed || ship.lost) {
       reset()
     }
   }
