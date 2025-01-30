@@ -27,6 +27,9 @@ const index = ref(-1)
 const typingMs = 50
 const enterMs = 100
 const listDisplayMs = 1000
+const blinkMs = 500
+let blinks = 0
+const maxBlinks = 4
 
 onMounted(() => {
   titleInterval = setInterval(() => {
@@ -35,6 +38,13 @@ onMounted(() => {
     if (index.value >= word.length) {
       titleTimeout = setTimeout(() => {
         title.value.innerHTML = `${word}<br/>_`
+        blinkInterval = setInterval(() => {
+          title.value.innerHTML = title.value.innerHTML.endsWith('_') ? `${word}<br/>&nbsp;` : `${word}<br/>_`
+          blinks++
+          if (blinks >= maxBlinks) {
+            clearInterval(blinkInterval)
+          }
+        }, blinkMs)
       }, enterMs)
       clearInterval(titleInterval)
     }
