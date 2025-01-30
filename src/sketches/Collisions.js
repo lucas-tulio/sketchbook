@@ -1,19 +1,21 @@
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT } from '@/sketches/constants'
 
 export function Collisions(p5, onLoad) {
-  const numBalls = 300
-  const defaultBallSize = 10
-  const defaultWiggle = 0.1
-  const balls = []
+  const DEFAULT_BALL_COUNT = 300
+  const DEFAULT_BALL_SIZE = 10
+  const DEFAULT_WIGGLE = 0.1
+  const DEFAULT_HUE = 220
+  const MAX_SPEED = 5
+  const ATTRITION = -0.1
 
-  const maxSpeed = 5
-  const attrition = -0.1
+  const balls = []
 
   let gravityCheckbox
   let gravity = 0.0001
   let ballSize
   let ballCount
   let vibration
+  let hue
 
   function createBall(x, y) {
     if (x && y) {
@@ -48,26 +50,26 @@ export function Collisions(p5, onLoad) {
     }
 
     this.applyMaxSpeed = function () {
-      if (this.velocity.x >= maxSpeed) {
-        this.velocity.x = maxSpeed
-      } else if (this.velocity.x <= -maxSpeed) {
-        this.velocity.x = -maxSpeed
+      if (this.velocity.x >= MAX_SPEED) {
+        this.velocity.x = MAX_SPEED
+      } else if (this.velocity.x <= -MAX_SPEED) {
+        this.velocity.x = -MAX_SPEED
       }
-      if (this.velocity.y >= maxSpeed) {
-        this.velocity.y = maxSpeed
-      } else if (this.velocity.y <= -maxSpeed) {
-        this.velocity.y = -maxSpeed
+      if (this.velocity.y >= MAX_SPEED) {
+        this.velocity.y = MAX_SPEED
+      } else if (this.velocity.y <= -MAX_SPEED) {
+        this.velocity.y = -MAX_SPEED
       }
     }
 
     this.bounceOnEdges = function () {
       if (this.x - this.radius / 2 < 0 || this.x + this.radius / 2 > p5.width) {
         this.velocity.x = -this.velocity.x
-        this.velocity.x += this.velocity.x * attrition
+        this.velocity.x += this.velocity.x * ATTRITION
       }
       if (this.y - this.radius / 2 < 0 || this.y + this.radius / 2 > p5.height) {
         this.velocity.y = -this.velocity.y
-        this.velocity.y += this.velocity.y * attrition
+        this.velocity.y += this.velocity.y * ATTRITION
       }
       // Avoid going thru walls
       if (this.x < this.radius / 2) {
@@ -111,10 +113,10 @@ export function Collisions(p5, onLoad) {
             balls[i].velocity.y += dvy
 
             // Apply attrition
-            this.velocity.x += this.velocity.x * attrition
-            this.velocity.y += this.velocity.y * attrition
-            balls[i].velocity.x += balls[i].velocity.x * attrition
-            balls[i].velocity.y += balls[i].velocity.y * attrition
+            this.velocity.x += this.velocity.x * ATTRITION
+            this.velocity.y += this.velocity.y * ATTRITION
+            balls[i].velocity.x += balls[i].velocity.x * ATTRITION
+            balls[i].velocity.y += balls[i].velocity.y * ATTRITION
           }
         }
       }
@@ -140,22 +142,30 @@ export function Collisions(p5, onLoad) {
   p5.setup = () => {
     p5.createCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT)
     p5.background(15, 0, 30, 255)
+    p5.noStroke()
 
     p5.createElement('span', 'Size').parent('controls')
-    ballSize = p5.createSlider(1, 50, defaultBallSize, 0.5).parent('controls')
+    ballSize = p5.createSlider(1, 50, DEFAULT_BALL_SIZE, 0.5).parent('controls')
     p5.createElement('br').parent('controls')
+
     p5.createElement('span', 'Density').parent('controls')
-    ballCount = p5.createSlider(0, 2000, numBalls, 1).parent('controls')
+    ballCount = p5.createSlider(0, 2000, DEFAULT_BALL_COUNT, 1).parent('controls')
     p5.createElement('br').parent('controls')
+
     p5.createElement('span', 'Wiggle').parent('controls')
-    vibration = p5.createSlider(0.01, 1, defaultWiggle, 0.01).parent('controls')
+    vibration = p5.createSlider(0.01, 1, DEFAULT_WIGGLE, 0.01).parent('controls')
+    p5.createElement('br').parent('controls')
+
+    p5.createElement('span', 'Hue').parent('controls')
+    hue = p5.createSlider(0, 360, DEFAULT_HUE, 1).parent('controls')
+    p5.createElement('br').parent('controls')
+
     gravityCheckbox = p5.createCheckbox('Gravity').parent('controls')
 
-    for (let i = 0; i < numBalls; i++) {
+    for (let i = 0; i < DEFAULT_BALL_COUNT; i++) {
       balls.push(createBall())
     }
-    p5.noStroke()
-    p5.fill(240, 200, 180)
+
     ballCount.elt.addEventListener('input', (event) => {
       const newBallCount = event.target.value
       let diff = balls.length - newBallCount
@@ -180,7 +190,7 @@ export function Collisions(p5, onLoad) {
     p5.background(0, 0, 30, 50)
     for (let i = 0; i < balls.length; i++) {
       p5.colorMode(p5.HSB)
-      p5.fill(220, 255, 255)
+      p5.fill(hue.value(), 100, 100)
       balls[i].update()
       balls[i].draw()
     }
