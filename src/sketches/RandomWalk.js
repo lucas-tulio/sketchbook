@@ -71,7 +71,7 @@ export function RandomWalk(p5, onLoad) {
     p5.createElement('span', 'Click and drag').parent('controls')
     p5.createElement('br').parent('controls')
     p5.createElement('span', 'Press R to reset').parent('controls')
-    p5.createElement('br').parent('controls')
+    p5.createElement('p').parent('controls')
 
     p5.createElement('span', 'Size').parent('controls')
     size = p5.createSlider(1, 30, DEFAULT_SIZE, 1).parent('controls')
