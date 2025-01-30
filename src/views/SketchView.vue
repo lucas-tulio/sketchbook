@@ -6,7 +6,10 @@
           <p class="home"><a href="/">< Home</a></p>
         </div>
         <div>
-          <p><a :href="previousLink">Previous</a> | <a :href="nextLink">Next</a></p>
+          <p>
+            <a :href="previousLink">Previous</a> | <a href="#" @click="goToRandom">Random</a> |
+            <a :href="nextLink">Next</a>
+          </p>
         </div>
       </header>
       <div class="title">
@@ -62,6 +65,11 @@ const nextLink = computed(() => {
   }
   return `/sketch/${Sketches[currentIndex + 1].name}`
 })
+
+const goToRandom = () => {
+  const randomIndex = Math.floor(Math.random() * Sketches.length)
+  window.location.href = `/sketch/${Sketches[randomIndex].name}`
+}
 
 const sourceLink = computed(() => {
   const sketch = Sketches.find((sketch) => sketch.name === props.slug)
