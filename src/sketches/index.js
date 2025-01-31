@@ -6,8 +6,10 @@ import { RandomWalk } from '@/sketches/RandomWalk'
 import { Flock } from '@/sketches/Flock'
 import { Lander } from '@/sketches/Lander'
 import { Terrain } from '@/sketches/Terrain'
+import { FlowFields } from '@/sketches/FlowFields'
 
 export default [
+  { name: 'Flow Fields', sketch: FlowFields },
   { name: 'Terrain', sketch: Terrain },
   { name: 'Lander', sketch: Lander },
   { name: 'Collisions', sketch: Collisions },
